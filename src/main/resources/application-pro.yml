@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://47.100.136.45:3306/blog?characterEncoding=utf8
+    username: root
+    password: hl1915525481
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true #在控制台和日志中输出sql语句
+logging:
+  level:
+    root: warn #设置全局日志级别
+    com.zero: info #设置对应目录日志级别，日志级别为debug
+  file:
+    path: log/blog.log #日志存放目录
+server:
+  port: 8081
