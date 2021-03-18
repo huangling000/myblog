@@ -8,6 +8,8 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true #在控制台和日志中输出sql语句
+  resources:
+    add-mappings: true
 logging:
   level:
     root: info #设置全局日志级别，此处默认为info，生产级别可加更高的warn
