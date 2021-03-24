@@ -26,7 +26,7 @@ public class TypeController {
 
     @GetMapping("/types")
     //@PageableDefault:设置默认分页大小，排序方式等，Model ：前端展示模型
-    public String types(@PageableDefault(size = 9,sort = {"id"},direction = Sort.Direction.DESC) Pageable pageable,
+    public String types(@PageableDefault(size = 10,sort = {"id"},direction = Sort.Direction.DESC) Pageable pageable,
                         Model model){
         model.addAttribute("page",typeService.listType(pageable));//查询到一页的数据放到模型中
         return "admin/types";

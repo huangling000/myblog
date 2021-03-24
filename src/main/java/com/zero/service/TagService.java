@@ -15,6 +15,12 @@ public interface TagService {
 
     Page<Tag> listTag(Pageable pageable);
 
+    List<Tag> listTag();
+
+    List<Tag> listTagTop(Integer size);
+
+    List<Tag> listTag(String ids);
+
     Tag getTagByName(String name);
 
     Tag updateTag(Long id, Tag tag);

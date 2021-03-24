@@ -6,10 +6,14 @@ import com.zero.po.Tag;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class TagServiceImpl implements TagService{
@@ -40,6 +44,44 @@ public class TagServiceImpl implements TagService{
     @Override
     public Page<Tag> listTag(Pageable pageable) {
         return tagRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<Tag> listTag() {
+        return tagRepository.findAll();
+    }
+
+    /**
+     *
+     * @param ids:逗号隔开的多个id
+     * @return：一个tag集合
+     */
+    @Override
+    public List<Tag> listTag(String ids) {
+        return tagRepository.findAll(convertToList(ids));
+    }
+
+    /**
+     * 将逗号隔开的字符串转换为long类型的list
+     * @param ids:逗号隔开的多个id
+     * @return list:long类型id集合
+     */
+    private List<Long> convertToList(String ids){
+        List<Long> list = new ArrayList<>();
+        if(!"".equals(ids) && ids != null){
+            String[] idarray = ids.split(",");
+            for(int i = 0; i < idarray.length; i++){
+                list.add(new Long(idarray[i]));
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public List<Tag> listTagTop(Integer size) {
+        Sort sort = new Sort(Sort.Direction.DESC,"blogs.size");
+        Pageable pageable = new PageRequest(0,size,sort);
+        return tagRepository.findTop(pageable);
     }
 
     @Transactional

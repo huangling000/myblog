@@ -18,11 +18,11 @@ public class Comment {
     private String nickname;  //昵称
     private String email;  //邮箱
     private String content;  //评论内容
-    private String avactar;   //头像
+    private String avatar;   //头像
 
     //生成数据库的时间
     @Temporal(TemporalType.TIMESTAMP)
-    private Date CreateTime;
+    private Date createTime;
 
     @ManyToOne
     private Blog blog;
@@ -33,7 +33,17 @@ public class Comment {
     @ManyToOne
     private Comment parentComment;
 
+    private boolean adminComment;
+
     public Comment() {
+    }
+
+    public boolean isAdminComment() {
+        return adminComment;
+    }
+
+    public void setAdminComment(boolean adminComment) {
+        this.adminComment = adminComment;
     }
 
     public Blog getBlog() {
@@ -92,20 +102,20 @@ public class Comment {
         this.content = content;
     }
 
-    public String getAvactar() {
-        return avactar;
+    public String getAvatar() {
+        return avatar;
     }
 
-    public void setAvactar(String avactar) {
-        this.avactar = avactar;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public Date getCreateTime() {
-        return CreateTime;
+        return createTime;
     }
 
     public void setCreateTime(Date createTime) {
-        CreateTime = createTime;
+        createTime = createTime;
     }
 
     @Override
@@ -115,8 +125,12 @@ public class Comment {
                 ", nickname='" + nickname + '\'' +
                 ", email='" + email + '\'' +
                 ", content='" + content + '\'' +
-                ", avactar='" + avactar + '\'' +
-                ", CreateTime=" + CreateTime +
+                ", avatar='" + avatar + '\'' +
+                ", createTime=" + createTime +
+                ", blog=" + blog +
+                ", replyComments=" + replyComments +
+                ", parentComment=" + parentComment +
+                ", adminComment=" + adminComment +
                 '}';
     }
 }

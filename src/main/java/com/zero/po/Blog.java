@@ -1,5 +1,7 @@
 package com.zero.po;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,8 +16,15 @@ public class Blog {
     @GeneratedValue
     private long id;  //主键
 
+    @NotBlank(message = "标题不能为空")//为空会抛出异常
     private String title;  //标题
+
+    @NotBlank(message = "内容不能为空")//为空会抛出异常
+    @Basic(fetch = FetchType.LAZY)
+    @Lob    //@Lob注解声明大字段类型 第一次初始化时才有效，一般和@Basic懒加载一起使用，只有需要获取的时候才去查询；也可以直接去数据库内将该字段改为longtext类型
     private String content; //内容
+
+    @NotBlank(message = "首图不能为空")//为空会抛出异常
     private String firstPicture; //首图
     private String flag;  //标记：原创或转载
     private Integer views; //浏览次数
@@ -31,17 +40,60 @@ public class Blog {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateTime;   //更新日期
 
-    @ManyToOne//可以有多个type,作为多的一端，主动维护type
+    @ManyToOne
     private Type type;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST})//新建一个tag会保存到数据库里
+    @ManyToMany(cascade = {CascadeType.PERSIST})//cascade设置级联关系,当新增一个博客的同时如果需要新增一个标签，则也将标签新增进数据库
     private List<Tag> tags = new ArrayList<>();
 
     @ManyToOne
     private User user;
 
-    @OneToMany(mappedBy = "blog")
+    @OneToMany(mappedBy = "blog")//一对多，一的一方为被维护方，mappedBy指定被维护方通过某属性连接
     private List<Comment> comments = new ArrayList<>();
+
+
+    @Transient//正常属性值，不和数据库一一映射
+    private String tagIds;
+
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+    //初始化当前博客Ids
+    public void init() {
+        this.tagIds = tagsToIds(this.getTags());
+    }
+
+    private String tagsToIds(List<Tag> tags) {
+        if (!tags.isEmpty()) {
+            StringBuffer ids = new StringBuffer();
+            boolean flag = false;
+            for (Tag tag : tags) {
+                if (flag) {
+                    ids.append(",");
+                } else {
+                    flag = true;
+                }
+                ids.append(tag.getId());
+            }
+            return ids.toString();
+        } else {
+            return tagIds;
+        }
+    }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getTagIds() {
+        return tagIds;
+    }
+
+    public void setTagIds(String tagIds) {
+        this.tagIds = tagIds;
+    }
 
     public Type getType() {
         return type;
@@ -200,6 +252,12 @@ public class Blog {
                 ", recommend=" + recommend +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
+                ", type=" + type +
+                ", tags=" + tags +
+                ", user=" + user +
+                ", comments=" + comments +
+                ", tagIds='" + tagIds + '\'' +
+                ", description='" + description + '\'' +
                 '}';
     }
 }
